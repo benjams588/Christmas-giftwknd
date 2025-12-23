@@ -521,11 +521,11 @@ Love Ben</div>
 
       presentBtn.addEventListener('click', next);
 
-      // Allow tapping anywhere on the present area (nice on mobile)
-      present.addEventListener('click', (e) => {
-        // prevent double firing (button + inner div)
-        e.stopPropagation();
-      });
+      // Make taps on the present itself advance the sequence (mobile-friendly)
+present.addEventListener('click', (e) => {
+  e.preventDefault();
+  next();
+});
     })();
   </script>
 </body>
