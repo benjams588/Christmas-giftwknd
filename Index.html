@@ -1,0 +1,532 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Christmas Present</title>
+  <meta name="description" content="Tap to open your Christmas present." />
+  <style>
+    :root{
+      --bg1:#0b1b2b;
+      --bg2:#132f3f;
+      --card:#ffffff;
+      --ink:#0d1b2a;
+      --muted:#425466;
+      --accent:#d6b25e;
+      --accent2:#bfe3ff;
+      --shadow: 0 10px 30px rgba(0,0,0,.25);
+      --radius: 18px;
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      min-height:100vh;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color:#fff;
+      background:
+        radial-gradient(1200px 700px at 10% 10%, rgba(191,227,255,.18), transparent 55%),
+        radial-gradient(900px 600px at 90% 30%, rgba(214,178,94,.14), transparent 50%),
+        linear-gradient(160deg, var(--bg1), var(--bg2));
+      overflow-x:hidden;
+    }
+
+    .wrap{
+      max-width: 520px;
+      margin: 0 auto;
+      padding: 28px 18px 34px;
+      min-height: 100vh;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:18px;
+    }
+
+    .top{
+      text-align:center;
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+    }
+
+    h1{
+      font-size: 22px;
+      font-weight: 650;
+      margin:0;
+      letter-spacing:.2px;
+    }
+    p{
+      margin:0;
+      color: rgba(255,255,255,.86);
+      line-height:1.45;
+      font-size: 14.5px;
+    }
+
+    .hint{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      padding:10px 14px;
+      border:1px solid rgba(255,255,255,.16);
+      border-radius: 999px;
+      background: rgba(255,255,255,.06);
+      backdrop-filter: blur(6px);
+      box-shadow: 0 8px 22px rgba(0,0,0,.18);
+      user-select:none;
+      width: fit-content;
+      margin: 0 auto;
+    }
+    .dot{
+      width:8px;height:8px;border-radius:99px;
+      background: var(--accent);
+      box-shadow: 0 0 0 4px rgba(214,178,94,.15);
+    }
+
+    .present-area{
+      width: 100%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      margin-top: 6px;
+      position: relative;
+    }
+
+    .present-btn{
+      appearance:none;
+      border:none;
+      background: transparent;
+      padding:0;
+      cursor:pointer;
+      -webkit-tap-highlight-color: transparent;
+      width: 260px;
+      height: 260px;
+      position: relative;
+      outline:none;
+    }
+
+    /* Present */
+    .present{
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transform: translateZ(0);
+      filter: drop-shadow(0 18px 22px rgba(0,0,0,.22));
+    }
+
+    .box{
+      position:absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: 26px;
+      width: 210px;
+      height: 150px;
+      border-radius: 16px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.15), transparent 45%),
+        linear-gradient(135deg, #c64b4b, #8f2d2d);
+      border: 1px solid rgba(255,255,255,.18);
+      overflow:hidden;
+    }
+
+    .stripe-vert{
+      position:absolute; inset:0;
+      width: 42px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(180deg, #f5d36a, #d6b25e);
+      opacity: .95;
+    }
+
+    .stripe-horz{
+      position:absolute;
+      height: 36px;
+      left:0; right:0;
+      top: 52px;
+      background: linear-gradient(180deg, #f5d36a, #d6b25e);
+      opacity: .95;
+    }
+
+    .lid{
+      position:absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      top: 54px;
+      width: 230px;
+      height: 68px;
+      border-radius: 16px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.16), transparent 55%),
+        linear-gradient(135deg, #d45d5d, #9a2f2f);
+      border: 1px solid rgba(255,255,255,.18);
+      transform-origin: 50% 90%;
+    }
+
+    .bow{
+      position:absolute;
+      left: 50%;
+      top: 32px;
+      transform: translateX(-50%);
+      width: 110px;
+      height: 80px;
+      pointer-events:none;
+    }
+    .bow:before, .bow:after{
+      content:"";
+      position:absolute;
+      width: 52px; height: 42px;
+      border-radius: 12px 22px 12px 22px;
+      background: linear-gradient(180deg, #ffe28a, #d6b25e);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.35);
+    }
+    .bow:before{ left:0; transform: rotate(-12deg); }
+    .bow:after{ right:0; transform: rotate(12deg); }
+    .knot{
+      position:absolute;
+      left:50%; top: 28px;
+      transform: translateX(-50%);
+      width: 18px; height: 18px;
+      border-radius: 6px;
+      background: linear-gradient(180deg, #ffe9a6, #d6b25e);
+      box-shadow: 0 6px 12px rgba(0,0,0,.14);
+    }
+
+    /* Sparkles */
+    .sparkles{
+      position:absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      top: 10px;
+      width: 280px;
+      height: 120px;
+      pointer-events:none;
+      opacity:0;
+      transition: opacity .35s ease;
+    }
+    .spark{
+      position:absolute;
+      width: 10px; height: 10px;
+      border-radius: 2px;
+      background: rgba(191,227,255,.9);
+      transform: rotate(45deg);
+      filter: drop-shadow(0 8px 10px rgba(0,0,0,.22));
+      animation: float 1.8s ease-in-out infinite;
+    }
+    .spark.s1{ left: 38px; top: 46px; animation-delay: .0s; }
+    .spark.s2{ left: 110px; top: 14px; width: 12px; height: 12px; animation-delay: .2s; }
+    .spark.s3{ right: 92px; top: 26px; width: 9px; height: 9px; animation-delay: .35s; }
+    .spark.s4{ right: 30px; top: 58px; width: 11px; height: 11px; animation-delay: .15s; }
+
+    @keyframes float{
+      0%,100%{ transform: translateY(0) rotate(45deg); opacity:.85; }
+      50%{ transform: translateY(-10px) rotate(45deg); opacity:1; }
+    }
+
+    /* Wiggle */
+    .wiggle{
+      animation: wiggle .45s ease-in-out;
+    }
+    @keyframes wiggle{
+      0%{ transform: rotate(0deg); }
+      20%{ transform: rotate(-4deg); }
+      45%{ transform: rotate(4deg); }
+      70%{ transform: rotate(-2deg); }
+      100%{ transform: rotate(0deg); }
+    }
+
+    /* Lid crack + open */
+    .crack .lid{
+      animation: crack .35s ease forwards;
+    }
+    @keyframes crack{
+      from { transform: translateX(-50%) rotate(0deg); }
+      to   { transform: translateX(-50%) rotate(-10deg); }
+    }
+
+    .open .lid{
+      animation: open 0.55s cubic-bezier(.2,.9,.2,1) forwards;
+    }
+    @keyframes open{
+      from { transform: translateX(-50%) rotate(-10deg); }
+      to   { transform: translateX(-50%) rotate(-38deg) translateY(-8px); }
+    }
+
+    /* Cards */
+    .reveal{
+      width:100%;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+      margin-top: 4px;
+      opacity:0;
+      transform: translateY(14px);
+      transition: opacity .4s ease, transform .4s ease;
+    }
+    .reveal.show{
+      opacity:1;
+      transform: translateY(0);
+    }
+
+    .cards{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:12px;
+    }
+
+    .card{
+      background: rgba(255,255,255,.92);
+      color: var(--ink);
+      border-radius: var(--radius);
+      padding: 14px 14px 13px;
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(255,255,255,.35);
+      backdrop-filter: blur(6px);
+      opacity:0;
+      transform: translateY(16px);
+      transition: opacity .45s ease, transform .45s ease;
+    }
+    .card.show{
+      opacity:1;
+      transform: translateY(0);
+    }
+    .date{
+      font-size: 13px;
+      color: var(--muted);
+      font-weight: 650;
+      letter-spacing: .2px;
+    }
+    .name{
+      font-size: 18px;
+      font-weight: 750;
+      margin-top: 4px;
+    }
+    .sub{
+      font-size: 13.5px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    .final{
+      text-align:center;
+      margin-top: 2px;
+      opacity:0;
+      transform: translateY(10px);
+      transition: opacity .45s ease, transform .45s ease;
+    }
+    .final.show{
+      opacity:1;
+      transform: translateY(0);
+    }
+    .final .big{
+      font-size: 18px;
+      font-weight: 700;
+      margin: 10px 0 6px;
+    }
+    .final .sign{
+      font-size: 14px;
+      color: rgba(255,255,255,.86);
+      line-height:1.5;
+      white-space: pre-line;
+    }
+
+    .footer{
+      margin-top:auto;
+      opacity:.65;
+      font-size: 12px;
+      text-align:center;
+      padding-top: 10px;
+    }
+
+    /* Accessibility */
+    .sr-only{
+      position:absolute;
+      width:1px;height:1px;
+      padding:0;margin:-1px;
+      overflow:hidden;clip:rect(0,0,0,0);
+      white-space:nowrap;border:0;
+    }
+
+    @media (prefers-reduced-motion: reduce){
+      .wiggle, .crack .lid, .open .lid, .spark{ animation:none !important; }
+      .reveal, .card, .final{ transition:none !important; }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="wrap">
+    <div class="top">
+      <h1 id="title">Tap your Christmas present</h1>
+      <div class="hint" aria-live="polite">
+        <span class="dot" aria-hidden="true"></span>
+        <span id="hintText">Tap the present to open it</span>
+      </div>
+      <p id="subText">Phone only. No sound. Just taps.</p>
+    </div>
+
+    <div class="present-area">
+      <button class="present-btn" id="presentBtn" type="button" aria-describedby="hintText">
+        <span class="sr-only">Tap to open</span>
+        <div class="present" id="present">
+          <div class="sparkles" id="sparkles" aria-hidden="true">
+            <span class="spark s1"></span>
+            <span class="spark s2"></span>
+            <span class="spark s3"></span>
+            <span class="spark s4"></span>
+          </div>
+
+          <div class="lid" id="lid"></div>
+          <div class="bow" aria-hidden="true"><div class="knot"></div></div>
+
+          <div class="box">
+            <div class="stripe-vert"></div>
+            <div class="stripe-horz"></div>
+          </div>
+        </div>
+      </button>
+    </div>
+
+    <section class="reveal" id="reveal">
+      <div class="cards">
+        <div class="card" id="card1">
+          <div class="date">Friday 1 May 2026</div>
+          <div class="name">Brett Blake</div>
+          <div class="sub">Friday night laughs</div>
+        </div>
+
+        <div class="card" id="card2">
+          <div class="date">Saturday 2 May 2026</div>
+          <div class="name">Ben Knight</div>
+          <div class="sub">Because one night isn’t enough</div>
+        </div>
+      </div>
+
+      <div class="final" id="final">
+        <div class="big">It’s a whole weekend of comedy.</div>
+        <div class="sign">Merry Christmas
+Love Ben</div>
+      </div>
+    </section>
+
+    <div class="footer" id="footer"></div>
+  </main>
+
+  <script>
+    (function(){
+      const presentBtn = document.getElementById('presentBtn');
+      const present = document.getElementById('present');
+      const sparkles = document.getElementById('sparkles');
+
+      const title = document.getElementById('title');
+      const hintText = document.getElementById('hintText');
+      const subText = document.getElementById('subText');
+
+      const reveal = document.getElementById('reveal');
+      const card1 = document.getElementById('card1');
+      const card2 = document.getElementById('card2');
+      const final = document.getElementById('final');
+      const footer = document.getElementById('footer');
+
+      const year = new Date().getFullYear();
+      footer.textContent = " " + year;
+
+      let step = 0;
+      let busy = false;
+
+      function doWiggle(){
+        present.classList.remove('wiggle');
+        // reflow
+        void present.offsetWidth;
+        present.classList.add('wiggle');
+      }
+
+      function setCopy(t, h, s){
+        title.textContent = t;
+        hintText.textContent = h;
+        subText.textContent = s;
+      }
+
+      function showSparkles(on){
+        sparkles.style.opacity = on ? "1" : "0";
+      }
+
+      function sleep(ms){ return new Promise(r => setTimeout(r, ms)); }
+
+      async function next(){
+        if(busy) return;
+        busy = true;
+
+        step += 1;
+
+        // Step 1: wiggle + line
+        if(step === 1){
+          doWiggle();
+          setCopy("Tap your Christmas present", "That was the easy part… (tap again)", " ");
+          await sleep(450);
+          busy = false;
+          return;
+        }
+
+        // Step 2: crack lid
+        if(step === 2){
+          doWiggle();
+          present.classList.add('crack');
+          setCopy("Getting warmer…", "Clear your first night… (tap again)", " ");
+          await sleep(450);
+          busy = false;
+          return;
+        }
+
+        // Step 3: open + show card1
+        if(step === 3){
+          present.classList.remove('crack');
+          present.classList.add('open');
+          showSparkles(true);
+          setCopy("Alright then…", "Here’s the first part (tap again)", " ");
+          reveal.classList.add('show');
+          await sleep(250);
+          card1.classList.add('show');
+          await sleep(450);
+          busy = false;
+          return;
+        }
+
+        // Step 4: show card2
+        if(step === 4){
+          setCopy("And because one night isn’t enough…", "Tap for the second night", " ");
+          card2.classList.add('show');
+          await sleep(450);
+          busy = false;
+          return;
+        }
+
+        // Step 5: final
+        if(step === 5){
+          setCopy("Done.", " ", " ");
+          final.classList.add('show');
+          hintText.textContent = " ";
+          subText.textContent = " ";
+          presentBtn.setAttribute('disabled', 'disabled');
+          presentBtn.style.cursor = "default";
+          busy = false;
+          return;
+        }
+
+        busy = false;
+      }
+
+      // Initial copy
+      setCopy("Tap your Christmas present", "Tap the present to open it", "Phone only. No sound. Just taps.");
+
+      presentBtn.addEventListener('click', next);
+
+      // Allow tapping anywhere on the present area (nice on mobile)
+      present.addEventListener('click', (e) => {
+        // prevent double firing (button + inner div)
+        e.stopPropagation();
+      });
+    })();
+  </script>
+</body>
+</html>
